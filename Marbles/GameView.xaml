@@ -13,7 +13,7 @@
             <RowDefinition Height="30"/>
             <RowDefinition Height="437*"/>
         </Grid.RowDefinitions>
-        <Grid Grid.Row="0">
+        <Grid x:Name="MarblesTheGame" Grid.Row="0">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="120"/>
                 <ColumnDefinition Width="10*"/>

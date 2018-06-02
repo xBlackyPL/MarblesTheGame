@@ -24,13 +24,8 @@ namespace Marbles
 
         private void ButtonBase_OnClick(object sender, RoutedEventArgs e)
         {
-            var boardNumberOfFileds = int.Parse(SizeTextBox.Text);
-            if (!(boardNumberOfFileds <= 5 || boardNumberOfFileds >= 26))
-            {
-                NavigationService?.Navigate(new GameView(boardNumberOfFileds));
-            }
-
-            Waring.Content = $@"Number of fields must be within 6 and 25!";
+            var boardNumberOfFileds = (int)Size.Value;
+            NavigationService?.Navigate(new GameView(boardNumberOfFileds));
         }
     }
 }

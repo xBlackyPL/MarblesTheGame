@@ -5,6 +5,6 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:Marbles"
         mc:Ignorable="d"
-        Title="MarblesTheGameGrid" MinWidth="500" MinHeight="500" Width="500" Height="500" Loaded="MarblesTheGame_Loaded">
+        Title="MarblesTheGame" MinWidth="500" MinHeight="500" Width="500" Height="500" Loaded="MarblesTheGame_Loaded">
     <Frame NavigationUIVisibility="Hidden" x:Name="Frame"/>
 </Window>
