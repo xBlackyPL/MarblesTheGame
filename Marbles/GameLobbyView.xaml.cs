@@ -24,8 +24,9 @@ namespace Marbles
 
         private void ButtonBase_OnClick(object sender, RoutedEventArgs e)
         {
-            var boardNumberOfFileds = (int)Size.Value;
-            NavigationService?.Navigate(new GameView(boardNumberOfFileds));
+            var boardNumberOfFileds = (int) Size.Value;
+            var numberOfColors = (int) Colors.Value;
+            NavigationService?.Navigate(new GameView(boardNumberOfFileds,numberOfColors));
         }
     }
 }

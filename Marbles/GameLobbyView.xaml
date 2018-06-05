@@ -1,42 +1,52 @@
 ﻿<Page x:Class="Marbles.GameLobbyView"
       xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
       xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-      xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
-      xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+      xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+      xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
       xmlns:local="clr-namespace:Marbles"
-      mc:Ignorable="d" 
+      mc:Ignorable="d"
       d:DesignHeight="450" d:DesignWidth="450"
       Title="GameLobbyView">
 
     <Grid x:Name="MarblesTheGame" Background="DarkGray">
-        <Grid x:Name="Menu" VerticalAlignment="Center" HorizontalAlignment="Center" Margin="93,90,93,80" Height="280"> 
+        <Grid x:Name="Menu" VerticalAlignment="Center" HorizontalAlignment="Center" Margin="93,90,93,80" Height="280">
             <Grid.RowDefinitions>
-                <RowDefinition Height="30">
-                </RowDefinition>
-                <RowDefinition Height="30">
-                </RowDefinition>
-                <RowDefinition  Height="30">
-                </RowDefinition >
-                <RowDefinition  Height="30">
-                </RowDefinition>
-                <RowDefinition Height="30">
-                </RowDefinition>
-                <RowDefinition  Height="30">
-                </RowDefinition >
-                <RowDefinition  Height="30">
-                </RowDefinition >
-                <RowDefinition  Height="30">
-                </RowDefinition>
-                <RowDefinition  Height="30">
-                </RowDefinition>
+                <RowDefinition Height="30" />
+                <RowDefinition Height="30" />
+                <RowDefinition Height="30" />
+                <RowDefinition Height="30" />
+                <RowDefinition Height="30" />
+                <RowDefinition Height="30" />
+                <RowDefinition Height="30" />
+                <RowDefinition Height="30" />
+                <RowDefinition Height="30" />
             </Grid.RowDefinitions>
-            <Label Width="205" Height="30" VerticalAlignment="Center" FontFamily="Consolas" Foreground="Black" FontWeight="Bold" FontSize="18"  HorizontalAlignment="Center" VerticalContentAlignment="Center" Grid.Row="0">Size of play area</Label>
-            <TextBox Text="{Binding ElementName=Size, Path=Value, UpdateSourceTrigger=PropertyChanged}"  FontFamily="Consolas" Foreground="Black" FontWeight="Bold" FontSize="24"  HorizontalAlignment="Center" TextAlignment="Center" Width="40" Grid.Row="1"/>
-            <Slider x:Name="Size" Value="9" Minimum="6" Maximum="25" TickPlacement="BottomRight" HorizontalAlignment="Center" TickFrequency="1" IsSnapToTickEnabled="True" VerticalAlignment="Center" Width="264" Grid.Row="2"/>
-            <Label Width="205" Height="30" VerticalAlignment="Center" FontFamily="Consolas" Foreground="Black" FontWeight="Bold" FontSize="18"  HorizontalAlignment="Center" VerticalContentAlignment="Center" Grid.Row="4">Number of colors</Label>
-            <TextBox Text="{Binding ElementName=Colors, Path=Value, UpdateSourceTrigger=PropertyChanged}"  FontFamily="Consolas" Foreground="Black" FontWeight="Bold" FontSize="24"  HorizontalAlignment="Center" TextAlignment="Center" Width="40" Grid.Row="5"/>
-            <Slider x:Name="Colors" Value="5" Minimum="3" Maximum="10" TickPlacement="BottomRight" HorizontalAlignment="Center" TickFrequency="1" IsSnapToTickEnabled="True" VerticalAlignment="Center" Width="264" Grid.Row="6"/>
-            <Button Height="30"  VerticalAlignment="Center" FontWeight="Bold" FontSize="18" FontFamily="Consolas" Click="ButtonBase_OnClick" HorizontalAlignment="Center" Width="70" Grid.Row="8">Start</Button>
+            <Label Width="205" Height="30" VerticalAlignment="Center" FontFamily="Consolas" Foreground="Black"
+                   FontWeight="Bold" FontSize="18" HorizontalAlignment="Center" VerticalContentAlignment="Center"
+                   Grid.Row="0">
+                Size of play area
+            </Label>
+            <TextBox Text="{Binding ElementName=Size, Path=Value, UpdateSourceTrigger=PropertyChanged}"
+                     FontFamily="Consolas" Foreground="Black" FontWeight="Bold" FontSize="24"
+                     HorizontalAlignment="Center" TextAlignment="Center" Width="40" Grid.Row="1" />
+            <Slider x:Name="Size" Value="9" Minimum="6" Maximum="25" TickPlacement="BottomRight"
+                    HorizontalAlignment="Center" TickFrequency="1" IsSnapToTickEnabled="True"
+                    VerticalAlignment="Center" Width="264" Grid.Row="2" />
+            <Label Width="205" Height="30" VerticalAlignment="Center" FontFamily="Consolas" Foreground="Black"
+                   FontWeight="Bold" FontSize="18" HorizontalAlignment="Center" VerticalContentAlignment="Center"
+                   Grid.Row="4">
+                Number of colors
+            </Label>
+            <TextBox Text="{Binding ElementName=Colors, Path=Value, UpdateSourceTrigger=PropertyChanged}"
+                     FontFamily="Consolas" Foreground="Black" FontWeight="Bold" FontSize="24"
+                     HorizontalAlignment="Center" TextAlignment="Center" Width="40" Grid.Row="5" />
+            <Slider x:Name="Colors" Value="5" Minimum="3" Maximum="10" TickPlacement="BottomRight"
+                    HorizontalAlignment="Center" TickFrequency="1" IsSnapToTickEnabled="True"
+                    VerticalAlignment="Center" Width="264" Grid.Row="6" />
+            <Button Height="30" VerticalAlignment="Center" FontWeight="Bold" FontSize="18" FontFamily="Consolas"
+                    Click="ButtonBase_OnClick" HorizontalAlignment="Center" Width="70" Grid.Row="8">
+                Start
+            </Button>
         </Grid>
     </Grid>
 </Page>

@@ -20,7 +20,7 @@
                 <ColumnDefinition Width="23*"/>
             </Grid.ColumnDefinitions>
             <Label FontWeight="Bold" FontFamily="Consolas" FontSize="14" VerticalAlignment="Center" Grid.Column="0">Current score:</Label>
-            <Label FontWeight="Bold" Margin="2 2 2 2" Background="LightGray" FontFamily="Consolas" FontSize="14" VerticalAlignment="Center" Grid.Column="1"> 0 </Label>
+            <Label x:Name="ScoreLabel" FontWeight="Bold" Margin="2 2 2 2" Background="LightGray" FontFamily="Consolas" FontSize="14" VerticalAlignment="Center" Grid.Column="1"> 0 </Label>
             <Button FontWeight="Bold" Margin="2 2 5 2" FontFamily="Consolas" Width="90" FontSize="14" HorizontalAlignment="Right" VerticalAlignment="Center" Grid.Column="2" Click="ButtonBase_OnClick"> Reset game </Button>
             </Grid >
 
