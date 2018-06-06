@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -15,7 +16,7 @@ using System.Windows.Shapes;
 
 namespace Marbles
 {
-    public partial class GameLobbyView : Page
+    public partial class GameLobbyView
     {
         public GameLobbyView()
         {
@@ -27,6 +28,11 @@ namespace Marbles
             var boardNumberOfFileds = (int) Size.Value;
             var numberOfColors = (int) Colors.Value;
             NavigationService?.Navigate(new GameView(boardNumberOfFileds,numberOfColors));
+        }
+
+        private void ScoreBoardButton_Click(object sender, RoutedEventArgs e)
+        {
+            NavigationService?.Navigate(new GameHighestScores());
         }
     }
 }

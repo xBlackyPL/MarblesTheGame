@@ -48,7 +48,13 @@ namespace Marbles
                     if (_gameElements[i][j].isEnable)
                         freeRealEstate.Add(new Point(j, i));
 
-            if (freeRealEstate.Count < 3) NavigationService?.Navigate(new GameLobbyView());
+            if (freeRealEstate.Count < 3)
+            {
+                var scoreString = (string)ScoreLabel.Content;
+                int.TryParse(scoreString, out var actualScore);
+                NavigationService?.Navigate(new GameHighestScores(actualScore,_mapSize,_numberOfColors));
+                return;
+            }
 
             while (index < 3)
             {

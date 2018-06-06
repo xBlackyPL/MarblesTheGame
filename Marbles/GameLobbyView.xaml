@@ -9,7 +9,7 @@
       Title="GameLobbyView">
 
     <Grid x:Name="MarblesTheGame" Background="DarkGray">
-        <Grid x:Name="Menu" VerticalAlignment="Center" HorizontalAlignment="Center" Margin="93,90,93,80" Height="280">
+        <Grid x:Name="Menu" VerticalAlignment="Center" HorizontalAlignment="Center" Margin="60,0,60,0" >
             <Grid.RowDefinitions>
                 <RowDefinition Height="30" />
                 <RowDefinition Height="30" />
@@ -19,7 +19,10 @@
                 <RowDefinition Height="30" />
                 <RowDefinition Height="30" />
                 <RowDefinition Height="30" />
+                <RowDefinition Height="60" />
                 <RowDefinition Height="30" />
+                <RowDefinition Height="30" />
+                <RowDefinition Height="40" />
             </Grid.RowDefinitions>
             <Label Width="205" Height="30" VerticalAlignment="Center" FontFamily="Consolas" Foreground="Black"
                    FontWeight="Bold" FontSize="18" HorizontalAlignment="Center" VerticalContentAlignment="Center"
@@ -46,6 +49,13 @@
             <Button Height="30" VerticalAlignment="Center" FontWeight="Bold" FontSize="18" FontFamily="Consolas"
                     Click="ButtonBase_OnClick" HorizontalAlignment="Center" Width="70" Grid.Row="8">
                 Start
+            </Button>
+            <Button x:Name="GameStartButton"  Height="50" VerticalAlignment="Center" FontWeight="Bold" FontSize="22" FontFamily="Consolas"
+                    Click="ButtonBase_OnClick" HorizontalAlignment="Center" Width="90" Grid.Row="8">
+                Start
+            </Button>
+            <Button x:Name="ScoreBoardButton" Height="30" VerticalAlignment="Center" FontWeight="Bold" FontSize="18" FontFamily="Consolas" HorizontalAlignment="Center" Width="160" Grid.Row="11" Click="ScoreBoardButton_Click">
+                Highest Scores
             </Button>
         </Grid>
     </Grid>
