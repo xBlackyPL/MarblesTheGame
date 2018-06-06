@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
@@ -36,16 +37,24 @@ namespace Marbles
             InitializeComponent();
         }
 
-        private void GameStartingSet()
+        private void GameWorld()
         {
             var index = 0;
+
+            var freeRealEstate = new List<Point>();
+
+            for (var i = 0; i < _mapSize; i++)
+                for (var j = 0; j < _mapSize; j++)
+                    if (_gameElements[i][j].isEnable)
+                        freeRealEstate.Add(new Point(j, i));
+
+            if (freeRealEstate.Count < 3) NavigationService?.Navigate(new GameLobbyView());
+
             while (index < 3)
             {
-                var x = _randomGenerator.Next(0, _mapSize);
-                var y = _randomGenerator.Next(0, _mapSize);
-
-                if (!_gameElements[y][x].isEnable) continue;
-
+                var newElement = _randomGenerator.Next(0, freeRealEstate.Count);
+                var y = (int)freeRealEstate[newElement].Y;
+                var x = (int)freeRealEstate[newElement].X;
                 _gameElements[y][x].isEnable = false;
                 _gameElements[y][x].isNowSet = true;
 
@@ -60,36 +69,36 @@ namespace Marbles
         private void DrawMap()
         {
             for (var i = 0; i < _mapSize; i++)
-            for (var j = 0; j < _mapSize; j++)
-            {
-                if (!_gameElements[i][j].isNowSet) continue;
-                if (_gameElements[i][j].isEnable) continue;
-                _gameElements[i][j].isNowSet = false;
-
-                var color = new SolidColorBrush(_gameElements[i][j].CircleColor);
-                var elipse = new Ellipse
+                for (var j = 0; j < _mapSize; j++)
                 {
-                    Margin = new Thickness(1, 1, 1, 1),
-                    HorizontalAlignment = HorizontalAlignment.Center,
-                    VerticalAlignment = VerticalAlignment.Center,
-                    Fill = color,
-                    Height = GameGrid.ActualHeight / _mapSize - 10,
-                    Width = (GameGrid.ActualWidth - 30) / _mapSize - 10
-                };
+                    if (!_gameElements[i][j].isNowSet) continue;
+                    if (_gameElements[i][j].isEnable) continue;
+                    _gameElements[i][j].isNowSet = false;
 
-                var elipseShadow = new Ellipse
-                {
-                    Margin = new Thickness(1, 1, 1, 1),
-                    HorizontalAlignment = HorizontalAlignment.Center,
-                    VerticalAlignment = VerticalAlignment.Center,
-                    Fill = Brushes.DarkGray,
-                    Height = GameGrid.ActualHeight / _mapSize - 9,
-                    Width = (GameGrid.ActualWidth - 30) / _mapSize - 9
-                };
+                    var color = new SolidColorBrush(_gameElements[i][j].CircleColor);
+                    var elipse = new Ellipse
+                    {
+                        Margin = new Thickness(1, 1, 1, 1),
+                        HorizontalAlignment = HorizontalAlignment.Center,
+                        VerticalAlignment = VerticalAlignment.Center,
+                        Fill = color,
+                        Height = GameGrid.ActualHeight / _mapSize - 10,
+                        Width = (GameGrid.ActualWidth - 30) / _mapSize - 10
+                    };
 
-                _universalCanvas[i][j].Children.Add(elipseShadow);
-                _universalCanvas[i][j].Children.Add(elipse);
-            }
+                    var elipseShadow = new Ellipse
+                    {
+                        Margin = new Thickness(1, 1, 1, 1),
+                        HorizontalAlignment = HorizontalAlignment.Center,
+                        VerticalAlignment = VerticalAlignment.Center,
+                        Fill = Brushes.DarkGray,
+                        Height = GameGrid.ActualHeight / _mapSize - 9,
+                        Width = (GameGrid.ActualWidth - 30) / _mapSize - 9
+                    };
+
+                    _universalCanvas[i][j].Children.Add(elipseShadow);
+                    _universalCanvas[i][j].Children.Add(elipse);
+                }
         }
 
         private void GenerateGrid()
@@ -107,8 +116,8 @@ namespace Marbles
 
             for (var i = 0; i < _mapSize; i++)
             {
-                var column = new ColumnDefinition {Width = new GridLength((GameGrid.ActualWidth - 30) / _mapSize)};
-                var row = new RowDefinition {Height = new GridLength(GameGrid.ActualHeight / _mapSize)};
+                var column = new ColumnDefinition { Width = new GridLength((GameGrid.ActualWidth - 30) / _mapSize) };
+                var row = new RowDefinition { Height = new GridLength(GameGrid.ActualHeight / _mapSize) };
                 newGrid.ColumnDefinitions.Add(column);
                 newGrid.RowDefinitions.Add(row);
             }
@@ -117,27 +126,27 @@ namespace Marbles
             for (var i = 0; i < _mapSize; i++) _universalCanvas[i] = new Grid[_mapSize];
 
             for (var i = 0; i < _mapSize; i++)
-            for (var j = 0; j < _mapSize; j++)
-            {
-                _universalCanvas[i][j] = new Grid
+                for (var j = 0; j < _mapSize; j++)
                 {
-                    VerticalAlignment = VerticalAlignment.Center,
-                    HorizontalAlignment = HorizontalAlignment.Center,
-                    Background = Brushes.GhostWhite,
-                    Height = GameGrid.ActualHeight / _mapSize - 4,
-                    Width = (GameGrid.ActualWidth - 30) / _mapSize - 4,
-                    Margin = new Thickness(1, 0, 1, 0)
-                };
-                _universalCanvas[i][j].MouseLeftButtonDown += OnMouseDown;
-                Grid.SetColumn(_universalCanvas[i][j], j);
-                Grid.SetRow(_universalCanvas[i][j], i);
-                newGrid.Children.Add(_universalCanvas[i][j]);
-            }
+                    _universalCanvas[i][j] = new Grid
+                    {
+                        VerticalAlignment = VerticalAlignment.Center,
+                        HorizontalAlignment = HorizontalAlignment.Center,
+                        Background = Brushes.GhostWhite,
+                        Height = GameGrid.ActualHeight / _mapSize - 4,
+                        Width = (GameGrid.ActualWidth - 30) / _mapSize - 4,
+                        Margin = new Thickness(1, 0, 1, 0)
+                    };
+                    _universalCanvas[i][j].MouseLeftButtonDown += OnMouseDown;
+                    Grid.SetColumn(_universalCanvas[i][j], j);
+                    Grid.SetRow(_universalCanvas[i][j], i);
+                    newGrid.Children.Add(_universalCanvas[i][j]);
+                }
         }
 
         private void OnMouseDown(object sender, MouseButtonEventArgs mouseButtonEventArgs)
         {
-            var canvas = (Grid) sender;
+            var canvas = (Grid)sender;
             var x = 0;
             var y = 0;
 
@@ -167,7 +176,9 @@ namespace Marbles
                 CheckRowForPoints(new Point(x, y));
                 CheckColumnForPoints(new Point(x, y));
                 CheckSquareForPoints(new Point(x, y));
-                GameStartingSet();
+                CheckDiagonalForPoints(new Point(x, y));
+                CheckAntiDiagonalForPoints(new Point(x, y));
+                GameWorld();
                 DrawMap();
             }
             else
@@ -185,10 +196,10 @@ namespace Marbles
         private void CheckColumnForPoints(Point startingPoint)
         {
             var score = 1;
-            var column = (int) startingPoint.X;
-            var row = (int) startingPoint.Y;
-            var top = column;
-            var bottom = column;
+            var column = (int)startingPoint.X;
+            var row = (int)startingPoint.Y;
+            var top = row;
+            var bottom = row;
             var checkTop = true;
             var checkBottom = true;
 
@@ -202,9 +213,8 @@ namespace Marbles
                             score++;
                         }
                         else
-                        {
                             checkTop = false;
-                        }
+                        
                     else
                         checkTop = false;
 
@@ -216,23 +226,22 @@ namespace Marbles
                             score++;
                         }
                         else
-                        {
                             checkBottom = false;
-                        }
+                        
                     else
                         checkBottom = false;
             }
 
             if (score < 5) return;
 
-            for (var i = top; i <= bottom; i++)
+            for (var i = bottom; i <= top; i++)
             {
                 _gameElements[i][column].isEnable = true;
                 _gameElements[i][column].CircleColor = GameElementCircle.AvailableColors.Last();
                 _universalCanvas[i][column].Children.Clear();
             }
 
-            var scoreString = (string) ScoreLabel.Content;
+            var scoreString = (string)ScoreLabel.Content;
             int.TryParse(scoreString, out var actualScore);
 
             actualScore += score;
@@ -242,8 +251,8 @@ namespace Marbles
         private void CheckRowForPoints(Point startingPoint)
         {
             var score = 1;
-            var column = (int) startingPoint.X;
-            var row = (int) startingPoint.Y;
+            var column = (int)startingPoint.X;
+            var row = (int)startingPoint.Y;
             var leftMargin = column;
             var rightMaring = column;
             var checkRight = true;
@@ -259,9 +268,9 @@ namespace Marbles
                             score++;
                         }
                         else
-                        {
                             checkRight = false;
-                        }
+                    else
+                        checkRight = false;
 
                 if (checkLeft)
                     if (column - i >= 0)
@@ -271,9 +280,7 @@ namespace Marbles
                             score++;
                         }
                         else
-                        {
                             checkLeft = false;
-                        }
                     else
                         checkLeft = false;
             }
@@ -287,17 +294,17 @@ namespace Marbles
                 _universalCanvas[row][i].Children.Clear();
             }
 
-            var scoreString = (string) ScoreLabel.Content;
+            var scoreString = (string)ScoreLabel.Content;
             int.TryParse(scoreString, out var actualScore);
 
             actualScore += score;
             ScoreLabel.Content = actualScore.ToString();
         }
 
-        private void CheckSquareForPoints(Point startinPoint)
+        private void CheckSquareForPoints(Point startingPoint)
         {
-            var column = (int) startinPoint.X;
-            var row = (int) startinPoint.Y;
+            var column = (int)startingPoint.X;
+            var row = (int)startingPoint.Y;
 
             if (column + 1 < _mapSize)
                 if (_gameElements[row][column + 1].CircleColor.Equals(_holdColor))
@@ -323,7 +330,7 @@ namespace Marbles
                                     GameElementCircle.AvailableColors.Last();
                                 _universalCanvas[row + 1][column + 1].Children.Clear();
 
-                                var scoreString = (string) ScoreLabel.Content;
+                                var scoreString = (string)ScoreLabel.Content;
                                 int.TryParse(scoreString, out var actualScore);
 
                                 actualScore += 4;
@@ -352,7 +359,7 @@ namespace Marbles
                                     GameElementCircle.AvailableColors.Last();
                                 _universalCanvas[row - 1][column + 1].Children.Clear();
 
-                                var scoreString = (string) ScoreLabel.Content;
+                                var scoreString = (string)ScoreLabel.Content;
                                 int.TryParse(scoreString, out var actualScore);
 
                                 actualScore += 4;
@@ -385,7 +392,7 @@ namespace Marbles
                                     GameElementCircle.AvailableColors.Last();
                                 _universalCanvas[row + 1][column - 1].Children.Clear();
 
-                                var scoreString = (string) ScoreLabel.Content;
+                                var scoreString = (string)ScoreLabel.Content;
                                 int.TryParse(scoreString, out var actualScore);
 
                                 actualScore += 4;
@@ -414,7 +421,7 @@ namespace Marbles
                                     GameElementCircle.AvailableColors.Last();
                                 _universalCanvas[row - 1][column - 1].Children.Clear();
 
-                                var scoreString = (string) ScoreLabel.Content;
+                                var scoreString = (string)ScoreLabel.Content;
                                 int.TryParse(scoreString, out var actualScore);
 
                                 actualScore += 4;
@@ -423,10 +430,117 @@ namespace Marbles
                 }
         }
 
+        private void CheckDiagonalForPoints(Point startingPoint)
+        {
+            var score = 1;
+            var column = (int)startingPoint.X;
+            var row = (int)startingPoint.Y;
+            var leftMargin = column;
+            var topMargin = row;
+            var checkTop = true;
+            var checkBottom = true;
+
+            for (var i = 1; i < _mapSize; i++)
+            {
+                if (checkTop)
+                    if (column - i >= 0 && row - i >= 0)
+                        if (_gameElements[row - i][column - i].CircleColor.Equals(_holdColor))
+                        {
+                            leftMargin = column - i;
+                            topMargin = row - i;
+                            score++;
+                        }
+                        else
+                            checkTop = false;
+                    else
+                        checkTop = false;
+
+                if (checkBottom)
+                    if (column + i < _mapSize && row + i < _mapSize)
+                        if (_gameElements[row + i][column + i].CircleColor.Equals(_holdColor))
+                        {
+                            score++;
+                        }
+                        else
+                            checkBottom = false;
+                    else
+                        checkBottom = false;
+            }
+
+            if (score < 5) return;
+
+            for (var i = 0; i < score; i++)
+            {
+                _gameElements[topMargin + i][leftMargin + i].isEnable = true;
+                _gameElements[topMargin + i][leftMargin + i].CircleColor = GameElementCircle.AvailableColors.Last();
+                _universalCanvas[topMargin + i][leftMargin + i].Children.Clear();
+            }
+
+            var scoreString = (string)ScoreLabel.Content;
+            int.TryParse(scoreString, out var actualScore);
+
+            actualScore += score;
+            ScoreLabel.Content = actualScore.ToString();
+        }
+
+        private void CheckAntiDiagonalForPoints(Point startingPoint)
+        {
+            var score = 1;
+            var column = (int)startingPoint.X;
+            var row = (int)startingPoint.Y;
+            var leftMargin = column;
+            var bottomMargin = row;
+            var checkTop = true;
+            var checkBottom = true;
+
+            for (var i = 1; i < _mapSize; i++)
+            {
+                if (checkTop)
+                    if (column + i  < _mapSize && row - i >= 0)
+                        if (_gameElements[row - i][column + i].CircleColor.Equals(_holdColor))
+                        {
+                            score++;
+                        }
+                        else
+                            checkTop = false;
+                    else
+                        checkTop = false;
+
+                if (checkBottom)
+                    if (column - i >= 0 && row + i < _mapSize)
+                        if (_gameElements[row + i][column - i].CircleColor.Equals(_holdColor))
+                        {
+                            leftMargin = column - i;
+                            bottomMargin = row + i;
+                            score++;
+                        }
+                        else
+                            checkBottom = false;
+                    else
+                        checkBottom = false;
+            }
+
+            if (score < 5) return;
+
+            for (var i = 0; i < score; i++)
+            {
+                _gameElements[bottomMargin - i][leftMargin + i].isEnable = true;
+                _gameElements[bottomMargin - i][leftMargin + i].CircleColor = GameElementCircle.AvailableColors.Last();
+                _universalCanvas[bottomMargin - i][leftMargin + i].Children.Clear();
+            }
+
+            var scoreString = (string)ScoreLabel.Content;
+            int.TryParse(scoreString, out var actualScore);
+
+            actualScore += score;
+            ScoreLabel.Content = actualScore.ToString();
+        }
+
+
         private void GameViewGrid_SizeChanged(object sender, SizeChangedEventArgs e)
         {
             GameGrid.Children.Clear();
-            GameStartingSet();
+            GameWorld();
             GenerateGrid();
             DrawMap();
         }
