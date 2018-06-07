@@ -5,6 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:Marbles"
         mc:Ignorable="d"
-        Title="MarblesTheGame" MinWidth="800" MinHeight="800" MaxWidth="800" MaxHeight="800" Width="800" Height="800" Loaded="MarblesTheGame_Loaded">
-    <Frame NavigationUIVisibility="Hidden" x:Name="Frame"/>
+        Title="MarblesTheGame" MinWidth="800" MinHeight="800" MaxWidth="800" MaxHeight="800" Width="800" Height="800"
+        Loaded="MarblesTheGame_Loaded">
+    <Frame NavigationUIVisibility="Hidden" x:Name="Frame" />
 </Window>

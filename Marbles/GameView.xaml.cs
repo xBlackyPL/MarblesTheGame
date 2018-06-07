@@ -18,9 +18,11 @@ namespace Marbles
         private bool _busy;
         private Color _holdColor;
         private Grid[][] _universalCanvas;
+        private Point _pointTaken;
 
         public GameView(int mapSize, int numberOfColors)
         {
+            _pointTaken = default;
             _busy = false;
             _mapSize = mapSize;
             _numberOfColors = numberOfColors;
@@ -45,14 +47,14 @@ namespace Marbles
 
             for (var i = 0; i < _mapSize; i++)
                 for (var j = 0; j < _mapSize; j++)
-                    if (_gameElements[i][j].isEnable)
+                    if (_gameElements[i][j].IsClickable)
                         freeRealEstate.Add(new Point(j, i));
 
             if (freeRealEstate.Count < 3)
             {
                 var scoreString = (string)ScoreLabel.Content;
                 int.TryParse(scoreString, out var actualScore);
-                NavigationService?.Navigate(new GameHighestScores(actualScore,_mapSize,_numberOfColors));
+                NavigationService?.Navigate(new GameHighestScores(actualScore, _mapSize, _numberOfColors));
                 return;
             }
 
@@ -61,8 +63,8 @@ namespace Marbles
                 var newElement = _randomGenerator.Next(0, freeRealEstate.Count);
                 var y = (int)freeRealEstate[newElement].Y;
                 var x = (int)freeRealEstate[newElement].X;
-                _gameElements[y][x].isEnable = false;
-                _gameElements[y][x].isNowSet = true;
+                _gameElements[y][x].IsClickable = false;
+                _gameElements[y][x].IsNowSet = true;
 
                 var color = _randomGenerator.Next(0, _numberOfColors);
                 _gameElements[y][x].CircleColor =
@@ -77,9 +79,9 @@ namespace Marbles
             for (var i = 0; i < _mapSize; i++)
                 for (var j = 0; j < _mapSize; j++)
                 {
-                    if (!_gameElements[i][j].isNowSet) continue;
-                    if (_gameElements[i][j].isEnable) continue;
-                    _gameElements[i][j].isNowSet = false;
+                    if (!_gameElements[i][j].IsNowSet) continue;
+                    if (_gameElements[i][j].IsClickable) continue;
+                    _gameElements[i][j].IsNowSet = false;
 
                     var color = new SolidColorBrush(_gameElements[i][j].CircleColor);
                     var elipse = new Ellipse
@@ -172,11 +174,13 @@ namespace Marbles
                 y++;
             }
 
+
             if (_busy)
             {
-                if (_gameElements[y][x].isEnable != true) return;
-                _gameElements[y][x].isNowSet = true;
-                _gameElements[y][x].isEnable = false;
+                if (_gameElements[y][x].IsClickable != true) return;
+                if (!GameCheckAvailable(_pointTaken, new Point(y, x))) return;
+                _gameElements[y][x].IsNowSet = true;
+                _gameElements[y][x].IsClickable = false;
                 _gameElements[y][x].CircleColor = _holdColor;
                 _busy = false;
                 CheckRowForPoints(new Point(x, y));
@@ -189,10 +193,11 @@ namespace Marbles
             }
             else
             {
-                if (_gameElements[y][x].isEnable) return;
+                if (_gameElements[y][x].IsClickable) return;
                 _universalCanvas[y][x].Children.Clear();
-                _gameElements[y][x].isEnable = true;
-                _gameElements[y][x].isNowSet = false;
+                _gameElements[y][x].IsClickable = true;
+                _gameElements[y][x].IsNowSet = false;
+                _pointTaken = new Point(x, y);
                 _busy = true;
                 _holdColor = _gameElements[y][x].CircleColor;
                 _gameElements[y][x].CircleColor = GameElementCircle.AvailableColors.Last();
@@ -220,29 +225,29 @@ namespace Marbles
                         }
                         else
                             checkTop = false;
-                        
+
                     else
                         checkTop = false;
 
-                if (checkBottom)
-                    if (row - i >= 0)
-                        if (_gameElements[row - i][column].CircleColor.Equals(_holdColor))
-                        {
-                            bottom = row - i;
-                            score++;
-                        }
-                        else
-                            checkBottom = false;
-                        
+                if (!checkBottom) continue;
+                if (row - i >= 0)
+                    if (_gameElements[row - i][column].CircleColor.Equals(_holdColor))
+                    {
+                        bottom = row - i;
+                        score++;
+                    }
                     else
                         checkBottom = false;
+
+                else
+                    checkBottom = false;
             }
 
             if (score < 5) return;
 
             for (var i = bottom; i <= top; i++)
             {
-                _gameElements[i][column].isEnable = true;
+                _gameElements[i][column].IsClickable = true;
                 _gameElements[i][column].CircleColor = GameElementCircle.AvailableColors.Last();
                 _universalCanvas[i][column].Children.Clear();
             }
@@ -278,24 +283,24 @@ namespace Marbles
                     else
                         checkRight = false;
 
-                if (checkLeft)
-                    if (column - i >= 0)
-                        if (_gameElements[row][column - i].CircleColor.Equals(_holdColor))
-                        {
-                            leftMargin = column - i;
-                            score++;
-                        }
-                        else
-                            checkLeft = false;
+                if (!checkLeft) continue;
+                if (column - i >= 0)
+                    if (_gameElements[row][column - i].CircleColor.Equals(_holdColor))
+                    {
+                        leftMargin = column - i;
+                        score++;
+                    }
                     else
                         checkLeft = false;
+                else
+                    checkLeft = false;
             }
 
             if (score < 5) return;
 
             for (var i = leftMargin; i <= rightMaring; i++)
             {
-                _gameElements[row][i].isEnable = true;
+                _gameElements[row][i].IsClickable = true;
                 _gameElements[row][i].CircleColor = GameElementCircle.AvailableColors.Last();
                 _universalCanvas[row][i].Children.Clear();
             }
@@ -319,19 +324,19 @@ namespace Marbles
                         if (_gameElements[row + 1][column + 1].CircleColor.Equals(_holdColor))
                             if (_gameElements[row + 1][column].CircleColor.Equals(_holdColor))
                             {
-                                _gameElements[row][column].isEnable = true;
+                                _gameElements[row][column].IsClickable = true;
                                 _gameElements[row][column].CircleColor = GameElementCircle.AvailableColors.Last();
                                 _universalCanvas[row][column].Children.Clear();
 
-                                _gameElements[row + 1][column].isEnable = true;
+                                _gameElements[row + 1][column].IsClickable = true;
                                 _gameElements[row + 1][column].CircleColor = GameElementCircle.AvailableColors.Last();
                                 _universalCanvas[row + 1][column].Children.Clear();
 
-                                _gameElements[row][column + 1].isEnable = true;
+                                _gameElements[row][column + 1].IsClickable = true;
                                 _gameElements[row][column + 1].CircleColor = GameElementCircle.AvailableColors.Last();
                                 _universalCanvas[row][column + 1].Children.Clear();
 
-                                _gameElements[row + 1][column + 1].isEnable = true;
+                                _gameElements[row + 1][column + 1].IsClickable = true;
                                 _gameElements[row + 1][column + 1].CircleColor =
                                     GameElementCircle.AvailableColors.Last();
                                 _universalCanvas[row + 1][column + 1].Children.Clear();
@@ -348,19 +353,19 @@ namespace Marbles
                         if (_gameElements[row - 1][column + 1].CircleColor.Equals(_holdColor))
                             if (_gameElements[row - 1][column].CircleColor.Equals(_holdColor))
                             {
-                                _gameElements[row][column].isEnable = true;
+                                _gameElements[row][column].IsClickable = true;
                                 _gameElements[row][column].CircleColor = GameElementCircle.AvailableColors.Last();
                                 _universalCanvas[row][column].Children.Clear();
 
-                                _gameElements[row][column + 1].isEnable = true;
+                                _gameElements[row][column + 1].IsClickable = true;
                                 _gameElements[row][column + 1].CircleColor = GameElementCircle.AvailableColors.Last();
                                 _universalCanvas[row][column + 1].Children.Clear();
 
-                                _gameElements[row - 1][column].isEnable = true;
+                                _gameElements[row - 1][column].IsClickable = true;
                                 _gameElements[row - 1][column].CircleColor = GameElementCircle.AvailableColors.Last();
                                 _universalCanvas[row - 1][column].Children.Clear();
 
-                                _gameElements[row - 1][column + 1].isEnable = true;
+                                _gameElements[row - 1][column + 1].IsClickable = true;
                                 _gameElements[row - 1][column + 1].CircleColor =
                                     GameElementCircle.AvailableColors.Last();
                                 _universalCanvas[row - 1][column + 1].Children.Clear();
@@ -381,19 +386,19 @@ namespace Marbles
                         if (_gameElements[row + 1][column - 1].CircleColor.Equals(_holdColor))
                             if (_gameElements[row + 1][column].CircleColor.Equals(_holdColor))
                             {
-                                _gameElements[row][column].isEnable = true;
+                                _gameElements[row][column].IsClickable = true;
                                 _gameElements[row][column].CircleColor = GameElementCircle.AvailableColors.Last();
                                 _universalCanvas[row][column].Children.Clear();
 
-                                _gameElements[row][column - 1].isEnable = true;
+                                _gameElements[row][column - 1].IsClickable = true;
                                 _gameElements[row][column - 1].CircleColor = GameElementCircle.AvailableColors.Last();
                                 _universalCanvas[row][column - 1].Children.Clear();
 
-                                _gameElements[row + 1][column].isEnable = true;
+                                _gameElements[row + 1][column].IsClickable = true;
                                 _gameElements[row + 1][column].CircleColor = GameElementCircle.AvailableColors.Last();
                                 _universalCanvas[row + 1][column].Children.Clear();
 
-                                _gameElements[row + 1][column - 1].isEnable = true;
+                                _gameElements[row + 1][column - 1].IsClickable = true;
                                 _gameElements[row + 1][column - 1].CircleColor =
                                     GameElementCircle.AvailableColors.Last();
                                 _universalCanvas[row + 1][column - 1].Children.Clear();
@@ -410,19 +415,19 @@ namespace Marbles
                         if (_gameElements[row - 1][column - 1].CircleColor.Equals(_holdColor))
                             if (_gameElements[row - 1][column].CircleColor.Equals(_holdColor))
                             {
-                                _gameElements[row][column].isEnable = true;
+                                _gameElements[row][column].IsClickable = true;
                                 _gameElements[row][column].CircleColor = GameElementCircle.AvailableColors.Last();
                                 _universalCanvas[row][column].Children.Clear();
 
-                                _gameElements[row][column - 1].isEnable = true;
+                                _gameElements[row][column - 1].IsClickable = true;
                                 _gameElements[row][column - 1].CircleColor = GameElementCircle.AvailableColors.Last();
                                 _universalCanvas[row][column - 1].Children.Clear();
 
-                                _gameElements[row - 1][column].isEnable = true;
+                                _gameElements[row - 1][column].IsClickable = true;
                                 _gameElements[row - 1][column].CircleColor = GameElementCircle.AvailableColors.Last();
                                 _universalCanvas[row - 1][column].Children.Clear();
 
-                                _gameElements[row - 1][column - 1].isEnable = true;
+                                _gameElements[row - 1][column - 1].IsClickable = true;
                                 _gameElements[row - 1][column - 1].CircleColor =
                                     GameElementCircle.AvailableColors.Last();
                                 _universalCanvas[row - 1][column - 1].Children.Clear();
@@ -461,23 +466,23 @@ namespace Marbles
                     else
                         checkTop = false;
 
-                if (checkBottom)
-                    if (column + i < _mapSize && row + i < _mapSize)
-                        if (_gameElements[row + i][column + i].CircleColor.Equals(_holdColor))
-                        {
-                            score++;
-                        }
-                        else
-                            checkBottom = false;
+                if (!checkBottom) continue;
+                if (column + i < _mapSize && row + i < _mapSize)
+                    if (_gameElements[row + i][column + i].CircleColor.Equals(_holdColor))
+                    {
+                        score++;
+                    }
                     else
                         checkBottom = false;
+                else
+                    checkBottom = false;
             }
 
             if (score < 5) return;
 
             for (var i = 0; i < score; i++)
             {
-                _gameElements[topMargin + i][leftMargin + i].isEnable = true;
+                _gameElements[topMargin + i][leftMargin + i].IsClickable = true;
                 _gameElements[topMargin + i][leftMargin + i].CircleColor = GameElementCircle.AvailableColors.Last();
                 _universalCanvas[topMargin + i][leftMargin + i].Children.Clear();
             }
@@ -502,7 +507,7 @@ namespace Marbles
             for (var i = 1; i < _mapSize; i++)
             {
                 if (checkTop)
-                    if (column + i  < _mapSize && row - i >= 0)
+                    if (column + i < _mapSize && row - i >= 0)
                         if (_gameElements[row - i][column + i].CircleColor.Equals(_holdColor))
                         {
                             score++;
@@ -512,25 +517,25 @@ namespace Marbles
                     else
                         checkTop = false;
 
-                if (checkBottom)
-                    if (column - i >= 0 && row + i < _mapSize)
-                        if (_gameElements[row + i][column - i].CircleColor.Equals(_holdColor))
-                        {
-                            leftMargin = column - i;
-                            bottomMargin = row + i;
-                            score++;
-                        }
-                        else
-                            checkBottom = false;
+                if (!checkBottom) continue;
+                if (column - i >= 0 && row + i < _mapSize)
+                    if (_gameElements[row + i][column - i].CircleColor.Equals(_holdColor))
+                    {
+                        leftMargin = column - i;
+                        bottomMargin = row + i;
+                        score++;
+                    }
                     else
                         checkBottom = false;
+                else
+                    checkBottom = false;
             }
 
             if (score < 5) return;
 
             for (var i = 0; i < score; i++)
             {
-                _gameElements[bottomMargin - i][leftMargin + i].isEnable = true;
+                _gameElements[bottomMargin - i][leftMargin + i].IsClickable = true;
                 _gameElements[bottomMargin - i][leftMargin + i].CircleColor = GameElementCircle.AvailableColors.Last();
                 _universalCanvas[bottomMargin - i][leftMargin + i].Children.Clear();
             }
@@ -549,6 +554,67 @@ namespace Marbles
             GameWorld();
             GenerateGrid();
             DrawMap();
+        }
+
+        private bool GameCheckAvailable(Point point, Point end)
+        {
+            var queue = new Queue<Point>();
+            queue.Enqueue(point);
+            var checkedList = new List<Point> { point };
+
+            while (queue.Count > 0)
+            {
+                var currentPoint = queue.Dequeue();
+
+                if (checkedList.Contains(end))
+                    return true;
+                
+
+                var newPoint = new Point(currentPoint.X + 1, currentPoint.Y);
+                if ((int)newPoint.X < _mapSize && 
+                    _gameElements[(int)newPoint.Y][(int)newPoint.X].IsClickable && 
+                    !checkedList.Contains(newPoint))
+                {
+                    checkedList.Add(currentPoint);
+                    queue.Enqueue(newPoint);
+                    if (checkedList.Contains(end))
+                        return true;
+                }
+
+                newPoint = new Point(currentPoint.X, currentPoint.Y + 1);
+                if ((int)newPoint.Y < _mapSize &&
+                    _gameElements[(int)newPoint.Y][(int)newPoint.X].IsClickable && 
+                    !checkedList.Contains(newPoint))
+                {
+                    checkedList.Add(currentPoint);
+                    queue.Enqueue(newPoint);
+                    if (checkedList.Contains(end))
+                        return true;
+                }
+
+                newPoint = new Point(currentPoint.X - 1, currentPoint.Y);
+                if ((int)newPoint.X >= 0 &&
+                    _gameElements[(int)newPoint.Y][(int)newPoint.X].IsClickable && 
+                    !checkedList.Contains(newPoint))
+                {
+                    checkedList.Add(currentPoint);
+                    queue.Enqueue(newPoint);
+                    if (checkedList.Contains(end))
+                        return true;
+                }
+
+                newPoint = new Point(currentPoint.X, currentPoint.Y - 1);
+                if ((int)newPoint.Y >= 0 && 
+                    _gameElements[(int)newPoint.Y][(int)newPoint.X].IsClickable && 
+                    !checkedList.Contains(newPoint))
+                {
+                    checkedList.Add(currentPoint);
+                    queue.Enqueue(newPoint);
+                    if (checkedList.Contains(end))
+                        return true;
+                }
+            }
+            return false;
         }
 
         private void ButtonBase_OnClick(object sender, RoutedEventArgs e)

@@ -1,14 +1,9 @@
-﻿using System.Windows;
-using System.Windows.Media;
+﻿using System.Windows.Media;
 
 namespace Marbles
 {
-    class GameElementCircle
+    internal class GameElementCircle
     {
-        public Color CircleColor { get; set; }
-        public bool isEnable;
-        public bool isNowSet;
-
         public static Color[] AvailableColors =
         {
             Colors.Red,
@@ -24,11 +19,16 @@ namespace Marbles
             Colors.Black
         };
 
+        public bool IsClickable;
+        public bool IsNowSet;
+
         public GameElementCircle()
         {
-            isEnable = true;
-            isNowSet = false;
+            IsClickable = true;
+            IsNowSet = false;
             CircleColor = AvailableColors[9];
         }
+
+        public Color CircleColor { get; set; }
     }
 }
