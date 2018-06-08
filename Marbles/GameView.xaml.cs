@@ -164,7 +164,7 @@ namespace Marbles
                 {
                     if (_universalCanvas[y][x].Equals(canvas))
                         break;
-                    x++;
+                   x++;
                 }
 
                 if (x < _mapSize)
@@ -177,8 +177,8 @@ namespace Marbles
 
             if (_busy)
             {
-                if (_gameElements[y][x].IsClickable != true) return;
                 if (!GameCheckAvailable(_pointTaken, new Point(y, x))) return;
+
                 _gameElements[y][x].IsNowSet = true;
                 _gameElements[y][x].IsClickable = false;
                 _gameElements[y][x].CircleColor = _holdColor;
@@ -193,7 +193,7 @@ namespace Marbles
             }
             else
             {
-                if (_gameElements[y][x].IsClickable) return;
+                //if (_gameElements[y][x].IsClickable) return;
                 _universalCanvas[y][x].Children.Clear();
                 _gameElements[y][x].IsClickable = true;
                 _gameElements[y][x].IsNowSet = false;
@@ -560,11 +560,11 @@ namespace Marbles
         {
             var queue = new Queue<Point>();
             queue.Enqueue(point);
-            var checkedList = new List<Point> { point };
+            var checkedList = new HashSet<Point> { point };
 
             while (queue.Count > 0)
             {
-                var currentPoint = queue.Dequeue();
+                   var currentPoint = queue.Dequeue();
 
                 if (checkedList.Contains(end))
                     return true;
@@ -575,7 +575,7 @@ namespace Marbles
                     _gameElements[(int)newPoint.Y][(int)newPoint.X].IsClickable && 
                     !checkedList.Contains(newPoint))
                 {
-                    checkedList.Add(currentPoint);
+                    checkedList.Add(newPoint);
                     queue.Enqueue(newPoint);
                     if (checkedList.Contains(end))
                         return true;
@@ -586,7 +586,7 @@ namespace Marbles
                     _gameElements[(int)newPoint.Y][(int)newPoint.X].IsClickable && 
                     !checkedList.Contains(newPoint))
                 {
-                    checkedList.Add(currentPoint);
+                    checkedList.Add(newPoint);
                     queue.Enqueue(newPoint);
                     if (checkedList.Contains(end))
                         return true;
@@ -597,7 +597,7 @@ namespace Marbles
                     _gameElements[(int)newPoint.Y][(int)newPoint.X].IsClickable && 
                     !checkedList.Contains(newPoint))
                 {
-                    checkedList.Add(currentPoint);
+                    checkedList.Add(newPoint);
                     queue.Enqueue(newPoint);
                     if (checkedList.Contains(end))
                         return true;
@@ -608,11 +608,13 @@ namespace Marbles
                     _gameElements[(int)newPoint.Y][(int)newPoint.X].IsClickable && 
                     !checkedList.Contains(newPoint))
                 {
-                    checkedList.Add(currentPoint);
+                    checkedList.Add(newPoint);
                     queue.Enqueue(newPoint);
                     if (checkedList.Contains(end))
                         return true;
                 }
+                if (checkedList.Contains(end))
+                    return true;
             }
             return false;
         }
